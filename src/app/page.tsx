@@ -140,7 +140,7 @@ export default function Home() {
     }, [matchId, roundId]);
 
     return (
-        <div className="min-h-screen w-screen py-5 flex flex-col items-center">
+        <div className="min-h-screen w-screen py-5 flex flex-col items-center bg-[#120E20]">
 
             <div className="flex flex-col w-[768px] mb-[100px]">
                 <div className="flex flex-row space-x-[10px] mb-[5px] items-center">
