@@ -10,6 +10,7 @@ import { v4 } from "uuid";
 import { CheckMark } from "./CheckMark";
 import { PokerAction } from "@/constants/poka";
 import { processRound } from "@/utils/poka";
+import { getExplorerLink } from "@/utils/common";
 
 type PokaTxDescriberProps = {
     roundId: string;
@@ -81,7 +82,7 @@ const PokaTxDescriber = ({
                 <div key={v4()}>
                     <strong>Event: New Match</strong>
                     <ul>
-                        <li>Mint Set: <Link href={`https://solscan.io/token/${newMatchEvent.match_data?.mint.toBase58()}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
+                        <li>Mint Set: <Link href={`${getExplorerLink("token", newMatchEvent.match_data?.mint.toBase58())}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
                     </ul>
                 </div>
             )
@@ -154,7 +155,7 @@ const PokaTxDescriber = ({
                     <div key={v4()}>
                         <strong>Event: {eventName}</strong>
                         <ul>
-                            <li>Player: <Link href={`https://solscan.io/account/${placeBetEvent.player.toBase58()}`} target="_blank"><strong>{placeBetEvent.player.toBase58()}</strong></Link></li>
+                            <li>Player: <Link href={`${getExplorerLink("account", placeBetEvent.player.toBase58())}`} target="_blank"><strong>{placeBetEvent.player.toBase58()}</strong></Link></li>
                             {
                                 isSitIn &&
                                 <li>Client Seed: <strong>{clientSeed} <CheckMark isSame={!!clientSeeds?.includes(clientSeed)}/></strong></li>
@@ -293,7 +294,7 @@ const PokaTxDescriber = ({
         <div className="flex flex-col bg-white w-full p-5 mt-5 rounded text-black">
             <strong>{title}</strong>
             <Link
-                href={`https://solscan.io/tx/${tx}`}
+                href={`${getExplorerLink("tx", tx)}`}
                 target="_blank"
             >
                 <div className="flex flex-row items-center">

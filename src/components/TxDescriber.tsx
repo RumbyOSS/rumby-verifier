@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getTxDetails } from "@/utils/parser";
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { findTargetBlockHash, getRandomNumberFromSeeds, resolveRouletteOutcome } from "@/utils/common";
+import { findTargetBlockHash, getExplorerLink, getRandomNumberFromSeeds, resolveRouletteOutcome } from "@/utils/common";
 import { Record } from "@/app/types";
 import { v4 } from "uuid";
 import { ROULETTE_RANGES } from "@/constants/common";
@@ -152,7 +152,7 @@ const TxDescriber = ({
                 <div key={v4()}>
                     <strong>Event: New Match</strong>
                     <ul>
-                        <li>Mint Set: <Link href={`https://solscan.io/token/${newMatchEvent.match_data?.mint.toBase58()}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
+                        <li>Mint Set: <Link href={`${getExplorerLink("token", newMatchEvent.match_data?.mint.toBase58())}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
                     </ul>
                 </div>
             )
@@ -212,8 +212,8 @@ const TxDescriber = ({
                         </li>
                         <li className="mt-[10px]">Revealed Server Seed (On Chain): <strong>{revealedServerSeed}</strong> <CheckMark isSame={revealedServerSeed === serverSeed}/></li>
                         <li>Revealed Public Seed (On Chain): <strong>{revealedPublicSeed}</strong> <CheckMark isSame={revealedPublicSeed === publicSeed}/></li>
-                        <li className="mt-[10px]">Target Slot (RPC): <Link href={`https://solscan.io/block/${foundSlot}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundSlot ?? "Getting Slot.."}</strong></Link></li>
-                        <li>Target Blockhash (RPC): <Link href={`https://solscan.io/block/${foundSlot}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundBlockhash ?? "Getting Blockhash.."}</strong> <CheckMark isSame={revealedPublicSeed === foundBlockhash}/></Link></li>
+                        <li className="mt-[10px]">Target Slot (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundSlot ?? "Getting Slot.."}</strong></Link></li>
+                        <li>Target Blockhash (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundBlockhash ?? "Getting Blockhash.."}</strong> <CheckMark isSame={revealedPublicSeed === foundBlockhash}/></Link></li>
                         <li className="mt-[10px]">Random Number (Calculated): <strong>{onchainRandomNumber}</strong> <CheckMark isSame={Number(onchainRandomNumber) === randomNumber}/></li>
                         <li>
                             Winners (Calculated): {winners?.length ?? 0}
@@ -343,7 +343,7 @@ const TxDescriber = ({
         <div className="flex flex-col bg-white w-full p-5 mt-5 rounded text-black">
             <strong>{title}</strong>
             <Link
-                href={`https://solscan.io/tx/${tx}`}
+                href={`${getExplorerLink("tx", tx)}`}
                 target="_blank"
             >
                 <div className="flex flex-row items-center">

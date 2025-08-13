@@ -10,6 +10,14 @@ export function sleep(ms: number) {
     });
 }
 
+export const isProduction = () => {
+    return !!process.env.NEXT_PUBLIC_IS_PRODUCTION;
+}
+
+export const getExplorerLink = (type: "token" | "account" | "block" | "tx", it: string) => {
+    const cluster = isProduction()? "?cluster=devnet" : "";
+    return `https://solscan.io/${type}/${it}${cluster}`;
+}
 
 export const findTargetBlockHash = async (connection: Connection, targetHeight: number, fromSlot: number = -1) => {
     let slot = fromSlot === -1 ? await connection.getSlot('confirmed') : fromSlot;
