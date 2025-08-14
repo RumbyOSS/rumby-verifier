@@ -2,7 +2,7 @@ import keccak256 from "keccak256"
 import MerkleTree from "merkletreejs";
 import { cloneObj } from "./common";
 import { RESULT_CURRENT_PLAYER_WIN, RESULT_DRAW } from "@/constants/poka";
-import { PokaCard } from "@/app/types";
+import { PokaCard } from "@/components/types";
 export const GOLD_CARD_VALUE = [52, 53];
 
 // 54-card deck: 0–51 = normal cards, 52–53 = jokers
@@ -733,7 +733,7 @@ export const getBestHandFromCardsV2 = (playerHand: number[], communityPool: numb
 
             const {
                 score,
-                cards,
+                // cards,
                 comparators,
                 name
             } = getHighestPokerCombinationV2(combination);
@@ -745,7 +745,7 @@ export const getBestHandFromCardsV2 = (playerHand: number[], communityPool: numb
 
             if(bestScore < score) {
                 bestScore = score;
-                bestCards = cards;
+                bestCards = combination;
                 bestComparators = comparators;
                 bestName = name;
                 continue;
@@ -764,7 +764,7 @@ export const getBestHandFromCardsV2 = (playerHand: number[], communityPool: numb
                 // new high set
                 if(currentSetComparator > previousSetComparator) {
                     bestScore = score;
-                    bestCards = cards;
+                    bestCards = combination;
                     bestComparators = comparators;
                     bestName = name;
                     break;

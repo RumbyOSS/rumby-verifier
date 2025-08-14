@@ -10,7 +10,7 @@ const CheckMark = ({isSame}: CheckMarkProps) => {
     }
 
     return (
-        <FontAwesomeIcon icon={faCheckCircle} color="green"/>
+        <FontAwesomeIcon icon={faCheckCircle} color="#00ff00"/>
     )
 }
 

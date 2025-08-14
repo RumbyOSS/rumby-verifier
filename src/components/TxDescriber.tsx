@@ -6,10 +6,11 @@ import { getTxDetails } from "@/utils/parser";
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import { findTargetBlockHash, getExplorerLink, getRandomNumberFromSeeds, resolveRouletteOutcome } from "@/utils/common";
-import { Record } from "@/app/types";
+import { Record } from "@/components/types";
 import { v4 } from "uuid";
 import { ROULETTE_RANGES } from "@/constants/common";
 import { CheckMark } from "./CheckMark";
+import { useVerifier } from "@/providers/VerifierProvider";
 
 const ROULETTE_HOUSE_BET = 1;
 
@@ -47,6 +48,7 @@ const TxDescriber = ({
     targetBlockHeight,
     fromSlot,
 }: TxDescriberProps) => {
+    const { setForceVerify } = useVerifier();
     const [hasError, setHasError] = useState(false);
     const [newMatchEvent, setNewMatchEvent] = useState<any>();
     const [newRoundEvent, setNewRoundEvent] = useState<any>();
@@ -150,7 +152,7 @@ const TxDescriber = ({
         if(newMatchEvent) {
             events.push(
                 <div key={v4()}>
-                    <strong>Event: New Match</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: New Match</strong>
                     <ul>
                         <li>Mint Set: <Link href={`${getExplorerLink("token", newMatchEvent.match_data?.mint.toBase58())}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
                     </ul>
@@ -162,11 +164,11 @@ const TxDescriber = ({
             const eventHashedSeed = bs58.encode(newRoundEvent.hashed_server_seed).toString();
             events.push(
                 <div key={v4()}>
-                    <strong>Event: New Game Round</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: New Game Round</strong>
                     <ul>
-                        <li>Round: <strong>{newRoundEvent.round.toNumber()}</strong></li>
-                        <li>Hashed Server Seed (Raw): <strong>[{newRoundEvent.hashed_server_seed.join(", ")}]</strong></li>
-                        <li>Hashed Server Seed (Decoded): <strong>{eventHashedSeed} <CheckMark isSame={eventHashedSeed === hashedServerSeed}/></strong></li>
+                        <li>Round: <strong className="text-[15px] mb-[10px]">{newRoundEvent.round.toNumber()}</strong></li>
+                        <li>Hashed Server Seed (Raw): <strong className="text-[15px] mb-[10px]">[{newRoundEvent.hashed_server_seed.join(", ")}]</strong></li>
+                        <li>Hashed Server Seed (Decoded): <strong className="text-[15px] mb-[10px]">{eventHashedSeed} <CheckMark isSame={eventHashedSeed === hashedServerSeed}/></strong></li>
                     </ul>
                 </div>
             )
@@ -175,17 +177,17 @@ const TxDescriber = ({
         if(placeBetEvent) {
             events.push(
                 <div key={v4()}>
-                    <strong>Event: Place Bet</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: Place Bet</strong>
                     <ul>
-                        <li>Player: <strong>{placeBetEvent.player.toBase58()}</strong></li>
-                        <li>Amount: <strong>{Number(BigInt(placeBetEvent.amount)) / LAMPORTS_PER_SOL}</strong></li>
+                        <li>Player: <strong className="text-[15px] mb-[10px]">{placeBetEvent.player.toBase58()}</strong></li>
+                        <li>Amount: <strong className="text-[15px] mb-[10px]">{Number(BigInt(placeBetEvent.amount)) / LAMPORTS_PER_SOL}</strong></li>
                         {
                             showChoice &&
-                            <li>Choice: <strong>{placeBetEvent.bet_type === ROULETTE_HOUSE_BET? 'House' : getChoice(placeBetEvent.choice)}</strong></li>
+                            <li>Choice: <strong className="text-[15px] mb-[10px]">{placeBetEvent.bet_type === ROULETTE_HOUSE_BET? 'House' : getChoice(placeBetEvent.choice)}</strong></li>
                         }
                         {
                             showTicketRange &&
-                            <li>Ticket Range: <strong>{rangeStart} - {rangeEnd}</strong></li>
+                            <li>Ticket Range: <strong className="text-[15px] mb-[10px]">{rangeStart} - {rangeEnd}</strong></li>
                         }
                     </ul>
                 </div>
@@ -195,7 +197,7 @@ const TxDescriber = ({
         if(revealEvent) {
             events.push(
                 <div key={v4()}>
-                    <strong>Event: Reveal Winners</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: Reveal Winners</strong>
                     <ul>
                         <li>
                             Winners (On Chain): {onchainWinners.length}
@@ -205,16 +207,16 @@ const TxDescriber = ({
                             }}>
                                 {
                                     onchainWinners.map((x: any) => (
-                                        <li key={v4()}><strong>{x}</strong></li>
+                                        <li key={v4()}><strong className="text-[15px] mb-[10px]">{x}</strong></li>
                                     ))
                                 }
                             </ul>
                         </li>
-                        <li className="mt-[10px]">Revealed Server Seed (On Chain): <strong>{revealedServerSeed}</strong> <CheckMark isSame={revealedServerSeed === serverSeed}/></li>
-                        <li>Revealed Public Seed (On Chain): <strong>{revealedPublicSeed}</strong> <CheckMark isSame={revealedPublicSeed === publicSeed}/></li>
-                        <li className="mt-[10px]">Target Slot (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundSlot ?? "Getting Slot.."}</strong></Link></li>
-                        <li>Target Blockhash (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} /><strong>{foundBlockhash ?? "Getting Blockhash.."}</strong> <CheckMark isSame={revealedPublicSeed === foundBlockhash}/></Link></li>
-                        <li className="mt-[10px]">Random Number (Calculated): <strong>{onchainRandomNumber}</strong> <CheckMark isSame={Number(onchainRandomNumber) === randomNumber}/></li>
+                        <li className="mt-[10px]">Revealed Server Seed (On Chain): <strong className="text-[15px] mb-[10px]">{revealedServerSeed}</strong> <CheckMark isSame={revealedServerSeed === serverSeed}/></li>
+                        <li>Revealed Public Seed (On Chain): <strong className="text-[15px] mb-[10px]">{revealedPublicSeed}</strong> <CheckMark isSame={revealedPublicSeed === publicSeed}/></li>
+                        <li className="mt-[10px]">Target Slot (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} className="mr-[5px]"/><strong className="text-[15px] mb-[10px]">{foundSlot ?? "Getting Slot.."}</strong></Link></li>
+                        <li>Target Blockhash (RPC): <Link href={`${getExplorerLink("block", foundSlot?.toString() ?? "")}`} target="_blank"><FontAwesomeIcon icon={faLink} className="mr-[5px]"/><strong className="text-[15px] mb-[10px]">{foundBlockhash ?? "Getting Blockhash.."}</strong> <CheckMark isSame={revealedPublicSeed === foundBlockhash}/></Link></li>
+                        <li className="mt-[10px]">Random Number (Calculated): <strong className="text-[15px] mb-[10px]">{onchainRandomNumber}</strong> <CheckMark isSame={Number(onchainRandomNumber) === randomNumber}/></li>
                         <li>
                             Winners (Calculated): {winners?.length ?? 0}
                             <ul style={{
@@ -223,7 +225,7 @@ const TxDescriber = ({
                             }}>
                                 {
                                     winners && winners.map((x: string) => (
-                                        <li key={v4()}><strong>{x}</strong> <CheckMark isSame={onchainWinners.map((w: string) => w.replace(" (House)", "")).includes(x)}/></li>
+                                        <li key={v4()}><strong className="text-[15px] mb-[10px]">{x}</strong> <CheckMark isSame={onchainWinners.map((w: string) => w.replace(" (House)", "")).includes(x)}/></li>
                                     ))
                                 }
                             </ul>
@@ -340,8 +342,8 @@ const TxDescriber = ({
     if(!tx) return null;
 
     return (
-        <div className="flex flex-col bg-white w-full p-5 mt-5 rounded text-black">
-            <strong>{title}</strong>
+        <div className="flex flex-col bg-white/10 w-full p-5 mt-5 rounded text-white font-ibm text-[12px]">
+            <strong className="text-[15px] mb-[10px]">{title}</strong>
             <Link
                 href={`${getExplorerLink("tx", tx)}`}
                 target="_blank"
@@ -353,10 +355,11 @@ const TxDescriber = ({
             </Link>
             {
                 hasError?
-                <div>
-                    Error
+                <div className="mt-[20px] flex flex-col items-start">
+                    <span>Encountered an error when getting this transaction</span>
+                    <button className="mt-[3px] px-3 py-1 bg-green-700 rounded" onClick={() => { setForceVerify(true) }}>Retry?</button>
                 </div>:
-                <div className="mt-5 space-y-[20px]">
+                <div className="mt-[30px] space-y-[30px]">
                     <Events />
                 </div>
             }

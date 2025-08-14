@@ -194,6 +194,6 @@ export const getTxDetails = async(connection: Connection, txHash: string) => {
     }
 
     catch {
-        alert('Unable to get tx')
+        console.log('Unable to get tx')
     }
 };

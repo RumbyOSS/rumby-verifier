@@ -1,4 +1,4 @@
-import { PokaCard } from "@/app/types";
+import { PokaCard } from "@/components/types";
 import { useCallback, useMemo } from "react";
 import { v4 } from "uuid";
 import { CheckMark } from "./CheckMark";
@@ -36,15 +36,15 @@ const PokaDeck = ({
             const calculatedName = calculatedCards[i] !== undefined? getCardAndSuitFromNumber(calculatedCards[i]).name : "";
             let bgColor = "";
             if(serverDeck[i].player === "Community") {
-                bgColor = "bg-yellow-300";
+                bgColor = "bg-yellow-300/50";
             }
 
             else if(serverDeck[i].player !== "--") {
-                bgColor = "bg-blue-300";
+                bgColor = "bg-blue-300/50";
             }
 
             cards.push(
-                <div key={v4()} className={`${bgColor} flex flex-row w-full relative group text-center`}>
+                <div key={v4()} className={`${bgColor} flex flex-row w-full relative group text-center py-[5px]`}>
                     <div className="w-[25%]">{i}</div>
                     <div className={`w-[25%] ${calculatedName === "GOLD"? "text-yellow-600 font-bold" : ""}`}>{serverDeck[i].label}</div>
                     <div className={`w-[25%] ${calculatedName === "GOLD"? "text-yellow-600 font-bold" : ""}`}>{calculatedName}</div>
@@ -64,8 +64,8 @@ const PokaDeck = ({
     }, [serverDeck, calculatedCards]);
 
     return (
-        <div className="flex flex-col bg-white w-full p-5 mt-5 rounded text-black">
-            <strong className="mb-1 text-center">Deck</strong>
+        <div className="flex flex-col bg-white/10 w-full p-5 mt-5 rounded text-white font-ibm text-[12px]">
+            <strong className="mb-1 text-center text-[15px] font-bold">Deck</strong>
             <span className="text-[12px] mb-5 text-right">** Hover to show the addresses that own the cards</span>
             <div className="flex flex-col w-full">
                 <div className="flex flex-row w-full text-center">

@@ -5,12 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { getTxDetails } from "@/utils/parser";
 import { Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { PokaCard, PokaRecord } from "@/app/types";
+import { PokaCard, PokaRecord } from "@/components/types";
 import { v4 } from "uuid";
 import { CheckMark } from "./CheckMark";
 import { PokerAction } from "@/constants/poka";
 import { processRound } from "@/utils/poka";
 import { getExplorerLink } from "@/utils/common";
+import { useVerifier } from "@/providers/VerifierProvider";
 
 type PokaTxDescriberProps = {
     roundId: string;
@@ -37,6 +38,7 @@ const PokaTxDescriber = ({
     serverDeck,
     pokaFoldedPlayers,
 }: PokaTxDescriberProps) => {
+    const { setForceVerify } = useVerifier();
     const [hasError, setHasError] = useState(false);
     const [newMatchEvent, setNewMatchEvent] = useState<any>();
     const [newRoundEvent, setNewRoundEvent] = useState<any>();
@@ -80,7 +82,7 @@ const PokaTxDescriber = ({
         if(newMatchEvent) {
             events.push(
                 <div key={v4()}>
-                    <strong>Event: New Match</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: New Match</strong>
                     <ul>
                         <li>Mint Set: <Link href={`${getExplorerLink("token", newMatchEvent.match_data?.mint.toBase58())}`} target="_blank">{newMatchEvent.match_data?.mint.toBase58()}</Link></li>
                     </ul>
@@ -92,11 +94,11 @@ const PokaTxDescriber = ({
             const eventHashedSeed = bs58.encode(newRoundEvent.hashed_server_seed).toString();
             events.push(
                 <div key={v4()}>
-                    <strong>Event: New Game Round</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: New Game Round</strong>
                     <ul>
-                        <li>Round: <strong>{newRoundEvent.round.toNumber()}</strong></li>
-                        <li>Hashed Server Seed (Raw): <strong>[{newRoundEvent.hashed_server_seed.join(", ")}]</strong></li>
-                        <li>Hashed Server Seed (Decoded): <strong>{eventHashedSeed} <CheckMark isSame={eventHashedSeed === hashedServerSeed}/></strong></li>
+                        <li>Round: <strong className="text-[15px] mb-[10px]">{newRoundEvent.round.toNumber()}</strong></li>
+                        <li>Hashed Server Seed (Raw): <strong className="text-[15px] mb-[10px]">[{newRoundEvent.hashed_server_seed.join(", ")}]</strong></li>
+                        <li>Hashed Server Seed (Decoded): <strong className="text-[15px] mb-[10px]">{eventHashedSeed} <CheckMark isSame={eventHashedSeed === hashedServerSeed}/></strong></li>
                     </ul>
                 </div>
             )
@@ -153,25 +155,25 @@ const PokaTxDescriber = ({
 
                 events.push(
                     <div key={v4()}>
-                        <strong>Event: {eventName}</strong>
+                        <strong className="text-[15px] mb-[10px]">Event: {eventName}</strong>
                         <ul>
-                            <li>Player: <Link href={`${getExplorerLink("account", placeBetEvent.player.toBase58())}`} target="_blank"><strong>{placeBetEvent.player.toBase58()}</strong></Link></li>
+                            <li>Player: <Link href={`${getExplorerLink("account", placeBetEvent.player.toBase58())}`} target="_blank"><strong className="text-[15px] mb-[10px]">{placeBetEvent.player.toBase58()}</strong></Link></li>
                             {
                                 isSitIn &&
-                                <li>Client Seed: <strong>{clientSeed} <CheckMark isSame={!!clientSeeds?.includes(clientSeed)}/></strong></li>
+                                <li>Client Seed: <strong className="text-[15px] mb-[10px]">{clientSeed} <CheckMark isSame={!!clientSeeds?.includes(clientSeed)}/></strong></li>
                             }
                             {
                                 placeBetEvent.card_index.length > 0 &&
-                                <li>Card Index(es): <strong>{placeBetEvent.card_index.join(", ")}</strong> <CheckMark isSame={playerHasCards}/></li>
+                                <li>Card Index(es): <strong className="text-[15px] mb-[10px]">{placeBetEvent.card_index.join(", ")}</strong> <CheckMark isSame={playerHasCards}/></li>
                             }
                             {
                                 placeBetEvent.card_index.length > 0 &&
-                                <li>Card(s): <strong>{cards.join(", ")}</strong></li>
+                                <li>Card(s): <strong className="text-[15px] mb-[10px]">{cards.join(", ")}</strong></li>
                             }
                             {/** have to change to mint decimals */}
                             {
                                 placeBetEvent.amount > 0 &&
-                                <li>Paid: <strong>{Number(BigInt(placeBetEvent.amount)) / LAMPORTS_PER_SOL}</strong></li>
+                                <li>Paid: <strong className="text-[15px] mb-[10px]">{Number(BigInt(placeBetEvent.amount)) / LAMPORTS_PER_SOL}</strong></li>
                             }
                         </ul>
                     </div>
@@ -182,7 +184,7 @@ const PokaTxDescriber = ({
         if(revealEvent) {
             events.push(
                 <div key={v4()}>
-                    <strong>Event: Reveal Winners</strong>
+                    <strong className="text-[15px] mb-[10px]">Event: Reveal Winners</strong>
                     <ul>
                         <li>
                             Winners (On Chain): {revealEvent.winners_count ?? 0}
@@ -200,7 +202,7 @@ const PokaTxDescriber = ({
                         {
                             result && result.bestCards &&
                             <>
-                            <li className="mt-5">Result: <strong>{result.bestName}</strong></li>
+                            <li className="mt-5">Result: <strong className="text-[15px] mb-[10px]">{result.bestName}</strong></li>
                             <li>
                                 Winners (Calculated): {result.winners.length ?? 0}
                                 <ul style={{
@@ -212,7 +214,7 @@ const PokaTxDescriber = ({
                                             <li key={v4()}>
                                                 {x} <CheckMark isSame={onchainWinners.includes(x)}/>
                                                 <br />
-                                                {serverDeck!.filter(y => result.bestCards!.includes(Number(y.card_number)) && (x === y.player || y.player === "Community")).sort((a, b) => Number(a.card_number) - Number(b.card_number)).map(z => z.label).join(", ")}
+                                                {serverDeck!.filter(y => result.bestCards!.includes(Number(y.card_number)) && (x === y.player || y.player === "Community")).sort((a, b) => Number(a.card_number) - Number(b.card_number)).map(z => z.label).join(", ")}{}
                                             </li>
                                         ))
                                     }
@@ -291,8 +293,8 @@ const PokaTxDescriber = ({
     if(!tx) return null;
 
     return (
-        <div className="flex flex-col bg-white w-full p-5 mt-5 rounded text-black">
-            <strong>{title}</strong>
+        <div className="flex flex-col bg-white/10 w-full p-5 mt-5 rounded text-white font-ibm text-[12px]">
+            <strong className="text-[15px] mb-[10px]">{title}</strong>
             <Link
                 href={`${getExplorerLink("tx", tx)}`}
                 target="_blank"
@@ -304,10 +306,11 @@ const PokaTxDescriber = ({
             </Link>
             {
                 hasError?
-                <div>
-                    Error
+                <div className="mt-[20px] flex flex-col items-start">
+                    <span>Encountered an error when getting this transaction</span>
+                    <button className="mt-[3px] px-3 py-1 bg-green-700 rounded" onClick={() => { setForceVerify(true); }}>Retry?</button>
                 </div>:
-                <div className="mt-5 space-y-[20px]">
+                <div className="mt-[30px] space-y-[20px]">
                     <Events />
                 </div>
             }

@@ -29,3 +29,5 @@ export const ROULETTE_RANGES = [
     [2,4,6,8,10,12,14], // blue
     [7,14], // pattern
 ];
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
