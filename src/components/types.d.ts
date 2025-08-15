@@ -20,6 +20,7 @@ export type Data = {
     total_amount: string;
     current_slot: string;
     records: Record[];
+    otherWinnerTxs: string[];
 }
 
 export type PokaRecord =  {

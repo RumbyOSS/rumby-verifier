@@ -83,6 +83,11 @@ const Layout = ({
         return data.records.filter(x => x.created_tx !== data.created_tx);
     }, [data]);
 
+    const otherWinTxs = useMemo(() => {
+        if(!data?.records || data.records.length === 0) return [];
+        return data.otherWinnerTxs.filter(x => x !== data.result_tx);
+    }, [data]);
+
     const pokaJoinRoundTxs = useMemo(() => {
         if(!pokaData?.records || pokaData.records.length === 0) return [];
         const filtered = pokaData.records.filter(x => x.status === "sitin");
@@ -448,6 +453,20 @@ const Layout = ({
                                     targetBlockHeight={Number(data.public_seed_block_height)}
                                     fromSlot={Number(data.current_slot)}
                                 />
+
+                                {
+                                    otherWinTxs.length > 0 &&
+                                    otherWinTxs.map((x) => (
+                                        <TxDescriber
+                                            gameId={gameId}
+                                            key={v4()}
+                                            title={`Winning Distribution`}
+                                            tx={x}
+                                            connection={connection}
+                                            records={data.records}
+                                        />
+                                    ))
+                                }
                                 </>
                             }
                             </>

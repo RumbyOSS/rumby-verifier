@@ -248,7 +248,6 @@ const PokaTxDescriber = ({
         if(!connection) return;
         setHasError(false);
         const getData = async() => {
-            console.log('getting details')
             const placeBetEvents: any = [];
             try {
                 const events = await getTxDetails(connection, tx);

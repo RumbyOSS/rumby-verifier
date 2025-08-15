@@ -110,10 +110,10 @@ export const decodeAllIxs = (tx: VersionedTransactionResponse, idl: Idl) => {
             }
         } catch (e: any) {
             console.log(e)
-            // If rumby IDL fails, just show raw data
+            //If rumby IDL fails, just show raw data
         }
 
-        // If rumby IDL doesn't work, show raw instruction data
+        //If rumby IDL doesn't work, show raw instruction data
         out.push({
             name: 'unknown',
             args: null,
@@ -152,10 +152,10 @@ export const decodeAllIxs = (tx: VersionedTransactionResponse, idl: Idl) => {
                 }
             } catch (e: any) {
                 console.log(e);
-                // If rumby IDL fails, just show raw data
+                //If rumby IDL fails, just show raw data
             }
 
-            // If rumby IDL doesn't work, show raw instruction data
+            //If rumby IDL doesn't work, show raw instruction data
             out.push({
                 name: 'unknown',
                 args: null,

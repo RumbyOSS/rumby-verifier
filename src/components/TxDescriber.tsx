@@ -277,7 +277,6 @@ const TxDescriber = ({
         if(!connection) return;
         
         const getData = async() => {
-            console.log('getting details')
             try {
                 const events = await getTxDetails(connection, tx);
 
