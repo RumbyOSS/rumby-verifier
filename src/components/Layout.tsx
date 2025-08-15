@@ -84,7 +84,7 @@ const Layout = ({
     }, [data]);
 
     const otherWinTxs = useMemo(() => {
-        if(!data?.records || data.records.length === 0) return [];
+        if(!data?.records || data.records.length === 0 || !data.otherWinnerTxs || data.otherWinnerTxs.length === 0) return [];
         return data.otherWinnerTxs.filter(x => x !== data.result_tx);
     }, [data]);
 
