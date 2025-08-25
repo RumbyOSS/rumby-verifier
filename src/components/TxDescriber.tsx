@@ -137,7 +137,7 @@ const TxDescriber = ({
                     return "Purple";
 
                 case 3:
-                    return "Yellow with Top or Red with Top";
+                    return "Yellow with Top / Purple with Top";
 
                 default:
                     return "Unknown";

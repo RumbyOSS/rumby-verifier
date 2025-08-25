@@ -11,7 +11,7 @@ export type Record =  {
 export type Data = {
     created_tx: string;
     committed_tx: string;
-    result_tx: string;
+    result_txs: string[];
     server_seed: string;
     hashed_server_seed: string;
     public_seed: string;

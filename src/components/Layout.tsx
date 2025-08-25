@@ -85,7 +85,7 @@ const Layout = ({
 
     const otherWinTxs = useMemo(() => {
         if(!data?.records || data.records.length === 0 || !data.otherWinnerTxs || data.otherWinnerTxs.length === 0) return [];
-        return data.otherWinnerTxs.filter(x => x !== data.result_tx);
+        return data.otherWinnerTxs.filter(x => !data.result_txs.includes(x));
     }, [data]);
 
     const pokaJoinRoundTxs = useMemo(() => {
@@ -440,19 +440,25 @@ const Layout = ({
                                     ))
                                 }
 
-                                <TxDescriber
-                                    gameId={gameId}
-                                    title='Result Transaction'
-                                    tx={data.result_tx}
-                                    connection={connection}
-                                    serverSeed={data.server_seed}
-                                    publicSeed={data.public_seed}
-                                    randomNumber={Number(data.random_number_revealed)}
-                                    totalAmount={Number(data.total_amount)}
-                                    records={data.records}
-                                    targetBlockHeight={Number(data.public_seed_block_height)}
-                                    fromSlot={Number(data.current_slot)}
-                                />
+                                {
+                                    data.result_txs.map((r, index) => (
+                                        <TxDescriber
+                                            key={v4()}
+                                            gameId={gameId}
+                                            title={`Result Transaction ${index + 1}`}
+                                            tx={r}
+                                            connection={connection}
+                                            serverSeed={data.server_seed}
+                                            publicSeed={data.public_seed}
+                                            randomNumber={Number(data.random_number_revealed)}
+                                            totalAmount={Number(data.total_amount)}
+                                            records={data.records}
+                                            targetBlockHeight={Number(data.public_seed_block_height)}
+                                            fromSlot={Number(data.current_slot)}
+                                        />
+
+                                    ))
+                                }
 
                                 {
                                     otherWinTxs.length > 0 &&
